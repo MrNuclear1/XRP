@@ -7,6 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.xrp.XRPMotor;
+
+import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -18,6 +22,14 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private final XRPMotor leftDrive = new XRPMotor(0);
+
+  private final XRPMotor rightDrive = new XRPMotor(1);
+
+  private final DifferentialDrive mDrive = new DifferentialDrive(leftDrive, rightDrive);
+
+  private final XboxController mController = new XboxController(0);
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -26,6 +38,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    rightDrive.setInverted(true);
   }
 
   /**
@@ -55,7 +68,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -64,7 +76,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    leftDrive.set(0.7);
+    rightDrive.set(0.7);
+
+  }
 
   @Override
   public void teleopInit() {
@@ -79,7 +95,13 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    
+  mDrive.tankDrive(-mController.getLeftY(), -mController.getRightY());
+
+
+
+  }
 
   @Override
   public void testInit() {
